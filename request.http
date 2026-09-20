@@ -1,0 +1,7 @@
+POST http://localhost:8080/habits
+Content-Type: application/json
+
+{
+  "name": "Тренировка",
+  "daysPerWeek": 4
+}
