@@ -6,8 +6,9 @@ import com.example.habittracker.entity.Habit;
 public class HabitMapper {
 
     public static HabitResponse toResponse(Habit habit) {
+
         return new HabitResponse(
-                (long) habit.getId(),
+                habit.getId(),
                 habit.getName(),
                 habit.getDescription(),
                 habit.getTarget(),

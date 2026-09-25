@@ -1,26 +1,15 @@
 package com.example.habittracker.repository;
 
 import com.example.habittracker.entity.HabitRecord;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.time.LocalDate;
 import java.util.List;
-@Repository
-public class HabitRecordRepository {
 
-    public HabitRecord createRecord(int habitId) {
-        return new HabitRecord(
-                1,
-                habitId,
-                java.time.LocalDate.now()
-        );
-    }
-    public List<HabitRecord> getRecords(int habitId) {
-        return List.of(
-                new HabitRecord(
-                        1,
-                        habitId,
-                        java.time.LocalDate.now()
-                )
-        );
-    }
+public interface HabitRecordRepository
+        extends JpaRepository<HabitRecord, Long> {
 
+    List<HabitRecord> findByHabitId(Long habitId);
+
+    boolean existsByHabitIdAndDate(Long habitId, LocalDate date);
 }

@@ -1,14 +1,40 @@
 package com.example.habittracker.entity;
+
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = "habits")
 public class Habit {
-    private int id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
+
     private String description;
+
     private int target;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @OneToMany(
+            mappedBy = "habit",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<HabitRecord> records = new ArrayList<>();
+
+    public Habit() {
+    }
+
     public Habit(
-            int id,
+            Long id,
             String name,
             String description,
             int target,
@@ -20,12 +46,15 @@ public class Habit {
         this.target = target;
         this.createdAt = createdAt;
     }
-    public int getId(){
+
+    public Long getId() {
         return id;
     }
+
     public String getName() {
         return name;
     }
+
     public String getDescription() {
         return description;
     }
@@ -33,7 +62,12 @@ public class Habit {
     public int getTarget() {
         return target;
     }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public List<HabitRecord> getRecords() {
+        return records;
     }
 }

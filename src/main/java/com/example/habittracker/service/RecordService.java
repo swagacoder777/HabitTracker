@@ -1,34 +1,60 @@
 package com.example.habittracker.service;
 
+import com.example.habittracker.entity.Habit;
 import com.example.habittracker.entity.HabitRecord;
+import com.example.habittracker.exception.HabitNotFoundException;
 import com.example.habittracker.repository.HabitRecordRepository;
+import com.example.habittracker.repository.HabitRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class RecordService {
 
     private final HabitRecordRepository habitRecordRepository;
-    private final HabitService habitService;
+    private final HabitRepository habitRepository;
 
     public RecordService(
             HabitRecordRepository habitRecordRepository,
-            HabitService habitService) {
+            HabitRepository habitRepository) {
 
         this.habitRecordRepository = habitRecordRepository;
-        this.habitService = habitService;
+        this.habitRepository = habitRepository;
     }
 
-    public HabitRecord createRecord(int habitId) {
-        habitService.getHabit(habitId);
+    public HabitRecord createRecord(Long habitId) {
 
-        return habitRecordRepository.createRecord(habitId);
+        Habit habit = habitRepository.findById(habitId)
+                .orElseThrow(() ->
+                        new HabitNotFoundException(
+                                "Привычка не найдена"
+                        ));
+
+        LocalDate today = LocalDate.now();
+
+        if (habitRecordRepository.existsByHabitIdAndDate(
+                habitId, today)) {
+
+            throw new IllegalStateException(
+                    "Сегодня привычка уже отмечена"
+            );
+        }
+
+        HabitRecord record = new HabitRecord(habit, today);
+
+        return habitRecordRepository.save(record);
     }
 
-    public List<HabitRecord> getRecords(int habitId) {
-        habitService.getHabit(habitId);
+    public List<HabitRecord> getRecords(Long habitId) {
 
-        return habitRecordRepository.getRecords(habitId);
+        if (!habitRepository.existsById(habitId)) {
+            throw new HabitNotFoundException(
+                    "Привычка не найдена"
+            );
+        }
+
+        return habitRecordRepository.findByHabitId(habitId);
     }
 }

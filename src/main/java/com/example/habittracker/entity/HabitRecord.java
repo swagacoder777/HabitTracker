@@ -1,24 +1,37 @@
 package com.example.habittracker.entity;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
+@Entity
+@Table(name = "records")
 public class HabitRecord {
 
-    private int id;
-    private int habitId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "habit_id", nullable = false)
+    private Habit habit;
+
     private LocalDate date;
 
-    public HabitRecord(int id, int habitId, LocalDate date) {
-        this.id = id;
-        this.habitId = habitId;
+    public HabitRecord() {
+    }
+
+    public HabitRecord(Habit habit, LocalDate date) {
+        this.habit = habit;
         this.date = date;
     }
-    public int getId() {
+
+    public Long getId() {
         return id;
     }
 
-    public int getHabitId() {
-        return habitId;
+    public Habit getHabit() {
+        return habit;
     }
 
     public LocalDate getDate() {
