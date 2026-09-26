@@ -4,7 +4,7 @@ import com.example.habittracker.entity.Habit;
 import com.example.habittracker.exception.HabitNotFoundException;
 import com.example.habittracker.repository.HabitRepository;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
@@ -27,11 +27,11 @@ public class HabitService {
                                 "Привычка не найдена"
                         ));
     }
-
+    @Transactional
     public Habit createHabit(Habit habit) {
         return habitRepository.save(habit);
     }
-
+    @Transactional
     public Habit updateHabit(Long id, Habit habit) {
 
         Habit existing = getHabit(id);
@@ -46,7 +46,7 @@ public class HabitService {
                 )
         );
     }
-
+    @Transactional
     public void deleteHabit(Long id) {
 
         Habit habit = getHabit(id);

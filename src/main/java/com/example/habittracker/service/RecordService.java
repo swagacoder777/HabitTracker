@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
-
+import org.springframework.transaction.annotation.Transactional;
 @Service
 public class RecordService {
 
@@ -23,7 +23,7 @@ public class RecordService {
         this.habitRecordRepository = habitRecordRepository;
         this.habitRepository = habitRepository;
     }
-
+    @Transactional
     public HabitRecord createRecord(Long habitId) {
 
         Habit habit = habitRepository.findById(habitId)
