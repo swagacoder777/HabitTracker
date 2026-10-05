@@ -5,11 +5,12 @@ import com.example.habittracker.entity.HabitRecord;
 import com.example.habittracker.service.RecordService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/habits/{id}/records")
+@SecurityRequirement(name = "bearerAuth")
 public class RecordController {
 
     private final RecordService recordService;
