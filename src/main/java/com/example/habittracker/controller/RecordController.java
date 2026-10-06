@@ -7,7 +7,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import java.util.List;
-
+import com.example.habittracker.mapper.RecordMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @RestController
 @RequestMapping("/api/habits/{id}/records")
 @SecurityRequirement(name = "bearerAuth")
@@ -18,7 +20,18 @@ public class RecordController {
     public RecordController(RecordService recordService) {
         this.recordService = recordService;
     }
-
+    @Operation(
+            summary = "Create a record",
+            description = "Creates a completion record for the current user's habit"
+    )
+    @ApiResponse(
+            responseCode = "201",
+            description = "Record created successfully"
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Habit not found"
+    )
     @PostMapping
     public ResponseEntity<RecordResponse> createRecord(
             @PathVariable Long id) {
@@ -27,24 +40,27 @@ public class RecordController {
 
         return ResponseEntity
                 .status(201)
-                .body(new RecordResponse(
-                        record.getId(),
-                        record.getHabit().getId(),
-                        record.getDate()
-                ));
+                .body(RecordMapper.toResponse(record));
     }
-
+    @Operation(
+            summary = "Get habit records",
+            description = "Returns all completion records for the current user's habit"
+    )
+    @ApiResponse(
+            responseCode = "200",
+            description = "Records retrieved successfully"
+    )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Habit not found"
+    )
     @GetMapping
     public List<RecordResponse> getRecords(
             @PathVariable Long id) {
 
         return recordService.getRecords(id)
                 .stream()
-                .map(record -> new RecordResponse(
-                        record.getId(),
-                        record.getHabit().getId(),
-                        record.getDate()
-                ))
+                .map(RecordMapper::toResponse)
                 .toList();
     }
 }
